@@ -12,17 +12,24 @@ import { StreamerSelection } from "./StreamerSelection";
 import { PendingStreamer } from "../interfaces/pending_streamer.interface";
 import { RequestFormData } from "../interfaces/request_form_data.interface";
 import { SearchResultStreamer } from "../interfaces/search_result_streamer.interface";
+import { createRequest, searchStreamer } from "../../services/agencyService";
+import { useAgencyStore } from "../../store/agencyStore";
+import { QueryObserverResult } from "@tanstack/react-query";
 
 interface AddStreamerModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   pendingStreamersFromProps?: PendingStreamer[];
+  refetchPendingStreamers: () => Promise<
+    QueryObserverResult<PendingStreamer[], Error>
+  >;
 }
 
 export const AddStreamerModal: FC<AddStreamerModalProps> = ({
   isOpen,
   onOpenChange,
   pendingStreamersFromProps = [],
+  refetchPendingStreamers,
 }) => {
   const [modalPhase, setModalPhase] = useState<"selection" | "form">(
     "selection"
@@ -37,6 +44,8 @@ export const AddStreamerModal: FC<AddStreamerModalProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500); // Debounce de 500ms
 
+  const { selectedAgency } = useAgencyStore();
+
   // --- Búsqueda Debounced ---
   const executeSearch = useCallback(
     async (query: string) => {
@@ -45,48 +54,16 @@ export const AddStreamerModal: FC<AddStreamerModalProps> = ({
         setIsLoadingSearch(false);
         return;
       }
+
+      if (!selectedAgency) return;
+
       setIsLoadingSearch(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      const results: SearchResultStreamer[] = [
-        ...(query.toLowerCase() === "streamernuevo"
-          ? [
-              {
-                id: "s4",
-                name: "StreamerNuevo",
-                imageUrl: "https://placehold.co/100x100/10B981/FFFFFF?text=SN",
-                isPending: false,
-                socialUsernames: {
-                  instagram: "streamernuevo",
-                },
-              },
-            ]
-          : []),
-        ...(query.toLowerCase() === "streamer_insta"
-          ? [
-              {
-                id: "s1",
-                name: "StreamerAfiliado1",
-                imageUrl: "https://placehold.co/100x100/8B5CF6/FFFFFF?text=SA1",
-                isPending: false,
-                socialUsernames: {
-                  instagram: "streamer_insta",
-                  tiktok: "streamer_insta",
-                  youtube: "streamer_insta",
-                },
-              },
-            ]
-          : []),
-        ...(pendingStreamersFromProps.some((p) =>
-          p.name.toLowerCase().includes(query.toLowerCase())
-        )
-          ? pendingStreamersFromProps
-              .filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
-              .map((p) => ({ ...p, isPending: true }))
-          : []),
-      ].filter(
-        (s, index, self) => index === self.findIndex((t) => t.id === s.id)
+      const results: SearchResultStreamer[] = await searchStreamer(
+        selectedAgency.id,
+        query
       );
+
       setSearchResults(results);
       setIsLoadingSearch(false);
     },
@@ -98,26 +75,25 @@ export const AddStreamerModal: FC<AddStreamerModalProps> = ({
   }, [debouncedSearchQuery, executeSearch]);
 
   const handleSelectForRequest = (streamer: SearchResultStreamer) => {
-    if (!streamer.isPending) {
-      setStreamerToRequest(streamer);
-      setModalPhase("form");
-    }
+    setStreamerToRequest(streamer);
+    setModalPhase("form");
   };
 
   const handleSubmitRequest = async (formData: RequestFormData) => {
     setIsSubmitting(true);
-    console.log(
-      "Enviando solicitud para:",
-      streamerToRequest?.name,
-      "con datos:",
+
+    await createRequest(
+      streamerToRequest?.id || "",
+      selectedAgency?.id || "",
       formData
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    alert(
-      `Solicitud enviada a ${streamerToRequest?.name} (Simulación exitosa)`
-    );
+    await refetchPendingStreamers();
+
     setIsSubmitting(false);
+    setSearchResults([]);
+    setModalPhase("selection");
+    setStreamerToRequest(null);
     onOpenChange(false);
   };
 

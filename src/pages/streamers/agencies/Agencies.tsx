@@ -1,68 +1,65 @@
 import { useDisclosure } from "@heroui/react";
 import { useState } from "react";
 import { AgencyRequest } from "./interface/agency_request.interface";
-import { Agency } from "./interface/agency.interface";
 import { AgencyInfoModal } from "./components/AgencyInfoModal";
 import { AffiliatedAgencyCard } from "./components/AffiliatedAgencyCard";
 import { AgencyRequestCard } from "./components/AgencyRequestCard";
 import { AgencySection } from "./components/AgencySection";
+import { useAgencies } from "./hooks/useAgencies";
 
 export const Agencies = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedRequest, setSelectedRequest] = useState<AgencyRequest | null>(
     null
   );
+  const {
+    affiliatedAgencies,
+    pendingRequests,
+    isLoading,
+    error,
+    acceptRequest,
+    rejectRequest,
+    refreshData,
+  } = useAgencies();
 
-  const affiliatedAgencies: Agency[] = [
-    {
-      id: "a1",
-      name: "Gaming Masters",
-      imageUrl: "https://placehold.co/100x100/7F00FF/FFFFFF?text=GM",
-    },
-    {
-      id: "a2",
-      name: "StreamPro Connect",
-      imageUrl: "https://placehold.co/100x100/1E40AF/FFFFFF?text=SC",
-    },
-  ];
-  const pendingRequests: AgencyRequest[] = [
-    {
-      id: "r1",
-      agency: {
-        id: "a3",
-        name: "Epic Streamers Hub",
-        imageUrl: "https://placehold.co/100x100/D97706/FFFFFF?text=ESH",
-      },
-      contractEndDate: "2026-12-31",
-      comments:
-        "¡Nos encantaría tenerte en nuestro equipo! Ofrecemos excelentes condiciones y apoyo constante para tu crecimiento.",
-      status: "pending",
-    },
-    {
-      id: "r2",
-      agency: {
-        id: "a4",
-        name: "Nexus Talents",
-        imageUrl: "https://placehold.co/100x100/059669/FFFFFF?text=NT",
-      },
-      contractEndDate: "2025-08-15",
-      comments: "Propuesta de colaboración para campañas exclusivas.",
-      status: "pending",
-    },
-  ];
+  const handleAcceptRequest = async (requestId: string) => {
+    await acceptRequest(requestId).then(() => {
+      refreshData();
+    });
+  };
 
-  const handleAcceptRequest = (requestId: string) => {
-    console.log(`Aceptar solicitud: ${requestId}`);
-    alert(`Aceptar solicitud ${requestId} (Lógica no implementada)`);
+  const handleRejectRequest = async (requestId: string) => {
+    await rejectRequest(requestId);
   };
-  const handleRejectRequest = (requestId: string) => {
-    console.log(`Rechazar solicitud: ${requestId}`);
-    alert(`Rechazar solicitud ${requestId} (Lógica no implementada)`);
-  };
+
   const handleOpenInfoModal = (request: AgencyRequest) => {
     setSelectedRequest(request);
     onOpen();
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-4xl flex justify-center items-center py-12">
+        <div className="animate-pulse text-center">
+          <p className="text-slate-500">Cargando información de agencias...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full max-w-4xl bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+        <p className="text-red-600">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl space-y-8 flex flex-col items-center">

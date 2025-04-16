@@ -89,7 +89,7 @@ export const StreamerSelection = ({
               className="flex items-center gap-2 p-2 bg-slate-700/50 rounded-lg opacity-70"
             >
               <Avatar
-                src={streamer.imageUrl}
+                src={streamer.profile_img}
                 size="sm"
                 icon={<FaUserCircle />}
               />
