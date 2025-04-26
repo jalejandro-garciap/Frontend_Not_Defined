@@ -54,9 +54,15 @@ export const StreamerSelection = ({
                 onPress={() => onSelectForRequest(streamer)}
                 startContent={<FaPaperPlane size={12} />}
                 className="bg-sky-600/10 hover:bg-sky-600/20 text-sky-300 border border-sky-600/30"
-                isDisabled={streamer.isPending}
+                isDisabled={pendingStreamers.some(
+                  (pendingStreamer) => pendingStreamer.id === streamer.id
+                )}
               >
-                {streamer.isPending ? "Pendiente" : "Solicitar"}
+                {pendingStreamers.some(
+                  (pendingStreamer) => pendingStreamer.id === streamer.id
+                )
+                  ? "Pendiente"
+                  : "Solicitar"}
               </Button>
             </div>
           ))}
