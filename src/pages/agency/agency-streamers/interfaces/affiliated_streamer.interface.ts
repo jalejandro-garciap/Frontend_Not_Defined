@@ -4,5 +4,5 @@ export interface AffiliatedStreamer {
   id: string;
   name: string;
   imageUrl?: string;
-  socialLinks?: SocialLinks;
+  connectedSocials: SocialLinks;
 }

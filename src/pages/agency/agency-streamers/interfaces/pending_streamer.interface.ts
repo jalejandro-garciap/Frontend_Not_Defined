@@ -1,5 +1,5 @@
 export interface PendingStreamer {
   id: string;
   name: string;
-  imageUrl?: string;
+  profile_img?: string;
 }

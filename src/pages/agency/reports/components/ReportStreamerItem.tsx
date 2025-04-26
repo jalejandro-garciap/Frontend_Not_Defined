@@ -1,6 +1,6 @@
 import { Checkbox, Avatar, Tooltip } from "@heroui/react";
 import { FaInstagram, FaTiktok, FaYoutube, FaUserCircle } from "react-icons/fa";
-import { AgencyStreamer } from "../interface/agency_streamer.interface";
+import { AffiliatedStreamer } from "../../agency-streamers/interfaces/affiliated_streamer.interface";
 
 export const ReportStreamerItem = ({
   streamer,
@@ -8,7 +8,7 @@ export const ReportStreamerItem = ({
   onAccountToggle,
   onToggleAllStreamerAccounts,
 }: {
-  streamer: AgencyStreamer;
+  streamer: AffiliatedStreamer;
   selectedAccounts: Set<"instagram" | "tiktok" | "youtube">;
   onAccountToggle: (
     streamerId: string,

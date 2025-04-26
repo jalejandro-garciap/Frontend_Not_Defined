@@ -10,25 +10,39 @@ import {
   Avatar,
   DropdownMenu,
   DropdownItem,
+  Select,
+  SelectItem,
+  Spinner,
 } from "@heroui/react";
-import { FaUserCircle } from "react-icons/fa";
-import {
-  IoNotificationsOutline,
-  IoSettingsOutline,
-  IoLogOutOutline,
-} from "react-icons/io5";
+import { IoNotificationsOutline, IoLogOutOutline } from "react-icons/io5";
+import { MdBusinessCenter } from "react-icons/md";
 import { useAuth } from "../context/AuthContext";
+import { useManagerAgencies } from "../pages/agency/store/agencyStore";
 import { useNavigate } from "react-router";
 
 export const MainNavbar = () => {
   const { user, logout } = useAuth();
-
   const nav = useNavigate();
   const activeSection = window.location.pathname.split("/")[1];
+
+  const isManager = user?.role === "MANAGER";
+  const isStreamer = user?.role === "STREAMER";
+
+  const { selectedAgency, managedAgencies, selectAgency, isLoading, error } =
+    isManager
+      ? useManagerAgencies()
+      : {
+          selectedAgency: null,
+          managedAgencies: [],
+          selectAgency: () => {},
+          isLoading: false,
+          error: null,
+        };
 
   const handleNavigate = (section: string) => {
     nav(`/${section}`);
   };
+
   return (
     <Navbar
       isBordered
@@ -38,44 +52,48 @@ export const MainNavbar = () => {
         <p className="font-bold text-inherit text-primary-400">StreamerPanel</p>
       </NavbarBrand>
 
-      <NavbarContent className="hidden sm:flex gap-2" justify="center">
-        <NavbarItem>
-          <Button
-            variant="flat"
-            onPress={() => handleNavigate("redes-sociales")}
-            className={`
-                ${
-                  activeSection === "redes-sociales"
-                    ? "bg-sky-600/20 text-sky-300"
-                    : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
-                }
-                px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
-              `}
-          >
-            Redes Sociales
-          </Button>
-        </NavbarItem>
-        <NavbarItem>
-          <Button
-            variant="flat"
-            onPress={() => handleNavigate("agencias")}
-            className={`
-                ${
-                  activeSection === "agencias"
-                    ? "bg-sky-600/20 text-sky-300"
-                    : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
-                }
-                px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
-              `}
-          >
-            Agencias
-          </Button>
-        </NavbarItem>
-        <NavbarItem>
-          <Button
-            variant="flat"
-            onPress={() => handleNavigate("streamers")}
-            className={`
+      {isManager && (
+        <>
+          <div className="flex items-center ml-4">
+            <div className="relative flex items-center gap-2 px-4 py-2 bg-sky-700/20 border border-sky-700/40 rounded-lg">
+              <MdBusinessCenter className="text-sky-400" size={18} />
+
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <Spinner size="sm" color="primary" />
+                  <span className="text-sm text-sky-300">
+                    Cargando agencias...
+                  </span>
+                </div>
+              ) : error ? (
+                <span className="text-sm text-red-400">
+                  Error al cargar agencias
+                </span>
+              ) : (
+                <Select
+                  size="sm"
+                  aria-label="Seleccionar Agencia"
+                  selectedKeys={[selectedAgency?.id || ""]}
+                  classNames={{
+                    base: "min-w-[180px]",
+                    trigger:
+                      "bg-transparent border-0 focus:outline-none p-0 h-7",
+                    value: "text-sky-300 font-medium",
+                  }}
+                  onChange={(e) => selectAgency(e.target.value)}
+                >
+                  {managedAgencies.map((agency) => (
+                    <SelectItem key={agency.id}>{agency.name}</SelectItem>
+                  ))}
+                </Select>
+              )}
+            </div>
+          </div>
+          <NavbarItem>
+            <Button
+              variant="flat"
+              onPress={() => handleNavigate("streamers")}
+              className={`
                 ${
                   activeSection === "streamers"
                     ? "bg-sky-600/20 text-sky-300"
@@ -83,15 +101,15 @@ export const MainNavbar = () => {
                 }
                 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
               `}
-          >
-            Streamers
-          </Button>
-        </NavbarItem>
-        <NavbarItem>
-          <Button
-            variant="flat"
-            onPress={() => handleNavigate("reportes")}
-            className={`
+            >
+              Streamers
+            </Button>
+          </NavbarItem>
+          <NavbarItem>
+            <Button
+              variant="flat"
+              onPress={() => handleNavigate("reportes")}
+              className={`
                 ${
                   activeSection === "reportes"
                     ? "bg-sky-600/20 text-sky-300"
@@ -99,10 +117,50 @@ export const MainNavbar = () => {
                 }
                 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
               `}
-          >
-            Reportes
-          </Button>
-        </NavbarItem>
+            >
+              Reportes
+            </Button>
+          </NavbarItem>
+        </>
+      )}
+
+      <NavbarContent className="hidden sm:flex gap-2" justify="center">
+        {isStreamer && (
+          <>
+            <NavbarItem>
+              <Button
+                variant="flat"
+                onPress={() => handleNavigate("redes-sociales")}
+                className={`
+                ${
+                  activeSection === "redes-sociales"
+                    ? "bg-sky-600/20 text-sky-300"
+                    : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+                }
+                px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
+              `}
+              >
+                Redes Sociales
+              </Button>
+            </NavbarItem>
+            <NavbarItem>
+              <Button
+                variant="flat"
+                onPress={() => handleNavigate("agencias")}
+                className={`
+                ${
+                  activeSection === "agencias"
+                    ? "bg-sky-600/20 text-sky-300"
+                    : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+                }
+                px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
+              `}
+              >
+                Agencias
+              </Button>
+            </NavbarItem>
+          </>
+        )}
       </NavbarContent>
 
       <NavbarContent as="div" justify="end">
@@ -128,12 +186,7 @@ export const MainNavbar = () => {
               className="transition-transform hover:scale-105"
               color="primary"
               size="sm"
-              src={user?.profile_image || undefined}
-              icon={
-                !user?.profile_image ? (
-                  <FaUserCircle size={20} className="text-slate-400" />
-                ) : undefined
-              }
+              src={user?.profile_img || undefined}
             />
           </DropdownTrigger>
           <DropdownMenu
@@ -156,14 +209,6 @@ export const MainNavbar = () => {
               <p className="font-semibold text-sm text-primary-400">
                 {user?.email || "usuario@ejemplo.com"}
               </p>
-            </DropdownItem>
-            <DropdownItem
-              key="settings"
-              startContent={
-                <IoSettingsOutline className="text-slate-400" size={18} />
-              }
-            >
-              Configuración
             </DropdownItem>
             <DropdownItem
               key="logout"

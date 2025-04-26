@@ -34,7 +34,7 @@ export const StreamerRequestForm = ({
   const [formData, setFormData] = useState<RequestFormData>({
     startDate: "",
     endDate: "",
-    comments: "",
+    comment: "",
   });
 
   const [errors, setErrors] = useState<{
@@ -42,7 +42,6 @@ export const StreamerRequestForm = ({
     budget?: string;
   }>({});
 
-  // Reset errors cuando cambie el formulario
   useEffect(() => {
     setErrors({});
   }, [formData]);
@@ -58,7 +57,6 @@ export const StreamerRequestForm = ({
     const newErrors: { dates?: string; budget?: string } = {};
     let isValid = true;
 
-    // Validar fechas
     if (!formData.startDate || !formData.endDate) {
       newErrors.dates = "Debes seleccionar un rango de fechas";
       isValid = false;
@@ -108,7 +106,7 @@ export const StreamerRequestForm = ({
               >
                 <FaInstagram
                   size={22}
-                  className="text-pink-400 hover:scale-110 transition-transform"
+                  className="text-[#E1306C] hover:scale-110 transition-transform"
                 />
               </Link>
             </Tooltip>
@@ -126,7 +124,7 @@ export const StreamerRequestForm = ({
               >
                 <FaTiktok
                   size={22}
-                  className="text-teal-400 hover:scale-110 transition-transform"
+                  className="text-white hover:scale-110 transition-transform"
                 />
               </Link>
             </Tooltip>
@@ -144,7 +142,7 @@ export const StreamerRequestForm = ({
               >
                 <FaYoutube
                   size={22}
-                  className="text-red-500 hover:scale-110 transition-transform"
+                  className="text-[#FF0000] hover:scale-110 transition-transform"
                 />
               </Link>
             </Tooltip>
@@ -194,8 +192,8 @@ export const StreamerRequestForm = ({
           label="Detalles de la Propuesta"
           labelPlacement="outside"
           placeholder="Describe tu idea de colaboración, requisitos específicos, objetivos, etc..."
-          name="comments"
-          value={formData.comments}
+          name="comment"
+          value={formData.comment}
           onChange={handleChange}
           classNames={{
             label: "text-slate-400",

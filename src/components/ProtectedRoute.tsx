@@ -3,8 +3,14 @@ import { useAuth } from "../context/AuthContext";
 import { Spinner } from "@heroui/react";
 import { MainNavbar } from "./MainNavbar";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { loading, isAuthenticated } = useAuth();
+const ProtectedRoute = ({
+  children,
+  allowedRoles,
+}: {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+}) => {
+  const { loading, isAuthenticated, user } = useAuth();
 
   if (loading) {
     return (
@@ -15,8 +21,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (isAuthenticated) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && user?.role && !allowedRoles.includes(user.role)) {
+    if (user.role === "MANAGER") {
+      return <Navigate to="/streamers" replace />;
+    } else if (user.role === "STREAMER") {
+      return <Navigate to="/redes-sociales" replace />;
+    }
+    return <Navigate to="/" replace />;
   }
 
   return (

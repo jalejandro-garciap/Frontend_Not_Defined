@@ -1,4 +1,13 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, Avatar, Divider, ModalFooter, Button } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  Avatar,
+  Divider,
+  ModalFooter,
+  Button,
+} from "@heroui/react";
 import { FaBuilding } from "react-icons/fa";
 import { AgencyRequest } from "../interface/agency_request.interface";
 
@@ -28,7 +37,6 @@ export const AgencyInfoModal = ({
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <Avatar
-                    src={request.agency.imageUrl}
                     icon={<FaBuilding className="text-slate-400" />}
                     size="lg"
                   />
@@ -42,7 +50,7 @@ export const AgencyInfoModal = ({
                     Fecha Fin de Contrato:
                   </p>
                   <p className="text-md text-slate-200">
-                    {request.contractEndDate || "No especificada"}
+                    {request.endDate || "No especificada"}
                   </p>
                 </div>
                 <div>
@@ -50,7 +58,7 @@ export const AgencyInfoModal = ({
                     Comentarios:
                   </p>
                   <p className="text-md text-slate-200 whitespace-pre-wrap">
-                    {request.comments || "Sin comentarios adicionales."}
+                    {request.comment || "Sin comentarios adicionales."}
                   </p>
                 </div>
               </div>
@@ -62,7 +70,7 @@ export const AgencyInfoModal = ({
           </ModalBody>
           <ModalFooter>
             <Button
-              color="primary" // Cambiado a primary para consistencia
+              color="primary"
               variant="light"
               onPress={onClose}
               className="text-slate-400 hover:text-slate-200"

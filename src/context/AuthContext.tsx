@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useAuthStore } from "../stores/authStore";
+import { useAuthStore } from "../utils/stores/authStore";
 import { useQuery } from "@tanstack/react-query";
+import { api, API_URL } from "../pages/login/services/api";
 
 export interface BackendUser {
   id: string;
@@ -11,29 +12,6 @@ export interface BackendUser {
     provider_id: string;
   }[];
 }
-
-export const API_URL = "/api";
-
-export const api = axios.create({
-  baseURL: API_URL,
-  withCredentials: true,
-});
-
-api.interceptors.request.use((request) => {
-  console.debug("Request:", request.method, request.url);
-  return request;
-});
-
-api.interceptors.response.use(
-  (response) => {
-    console.debug("Response:", response.status, response.config.url);
-    return response;
-  },
-  (error) => {
-    console.error("Response Error:", error.response?.status || error.message);
-    return Promise.reject(error);
-  }
-);
 
 export const loginWithTikTok = () => {
   const loginUrl = `${API_URL}/auth/login/tiktok`;
@@ -54,7 +32,7 @@ export const loginWithGoogle = () => {
 };
 
 export const logout = async () => {
-  const clearUser = useAuthStore.getState().clearUser;
+  const { clearUser } = useAuthStore();
   try {
     await api.delete("/auth/logout");
     clearUser();
@@ -80,9 +58,12 @@ export const useAuthCheck = () => {
         });
 
         if (typeof data === "string" && data.includes("<!DOCTYPE html>")) {
-          console.error(
-            "Received HTML response instead of JSON. Check API_URL configuration."
+          console.log(
+            "Detectada página de consentimiento de ngrok, redirigiendo..."
           );
+
+          window.location.href = `${API_URL}/auth/status`;
+
           clearUser();
           return null;
         }

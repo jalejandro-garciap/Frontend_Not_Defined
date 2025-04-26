@@ -12,7 +12,7 @@ function App() {
       <Route
         path="/redes-sociales"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["STREAMER"]}>
             <SocialMedia />
           </ProtectedRoute>
         }
@@ -20,7 +20,7 @@ function App() {
       <Route
         path="/agencias"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["STREAMER"]}>
             <Agencies />
           </ProtectedRoute>
         }
@@ -28,7 +28,7 @@ function App() {
       <Route
         path="/streamers"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["MANAGER"]}>
             <AgencyStreamersView />
           </ProtectedRoute>
         }
@@ -36,7 +36,7 @@ function App() {
       <Route
         path="/reportes"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["MANAGER"]}>
             <AgencyReportsView />
           </ProtectedRoute>
         }

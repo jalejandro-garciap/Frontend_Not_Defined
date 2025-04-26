@@ -7,6 +7,7 @@ import {
   Button,
   DropdownMenu,
   DropdownItem,
+  Spinner,
 } from "@heroui/react";
 import {
   FaUserCircle,
@@ -21,9 +22,11 @@ import { AffiliatedStreamer } from "../interfaces/affiliated_streamer.interface"
 export const AffiliatedStreamerCard = ({
   streamer,
   onRemove,
+  loadingRemove,
 }: {
   streamer: AffiliatedStreamer;
   onRemove: (id: string) => void;
+  loadingRemove: boolean;
 }) => (
   <Card className="p-4 bg-slate-800/50 border border-slate-700">
     <CardBody className="flex flex-row items-center justify-between gap-4">
@@ -36,9 +39,9 @@ export const AffiliatedStreamerCard = ({
         <span className="font-medium text-slate-200">{streamer.name}</span>
       </div>
       <div className="flex items-center gap-3 text-slate-400">
-        {streamer.socialLinks?.instagram && <FaInstagram size={18} />}
-        {streamer.socialLinks?.tiktok && <FaTiktok size={18} />}
-        {streamer.socialLinks?.youtube && <FaYoutube size={18} />}
+        {streamer.connectedSocials?.instagram && <FaInstagram size={18} />}
+        {streamer.connectedSocials?.tiktok && <FaTiktok size={18} />}
+        {streamer.connectedSocials?.youtube && <FaYoutube size={18} />}
       </div>
       <Dropdown
         placement="bottom-end"
@@ -61,15 +64,18 @@ export const AffiliatedStreamerCard = ({
             base: "data-[hover=true]:bg-slate-700/50 rounded-lg",
             title: "font-medium text-sm text-slate-200",
           }}
+          disabledKeys={loadingRemove ? ["remove"] : []}
         >
           <DropdownItem
             key="remove"
             color="danger"
-            startContent={<FaTrashAlt size={14} />}
+            startContent={
+              loadingRemove ? <Spinner size="sm" /> : <FaTrashAlt size={14} />
+            }
             onPress={() => onRemove(streamer.id)}
             className="text-red-400 data-[hover=true]:bg-red-600/20"
           >
-            Remover de la agencia
+            {loadingRemove ? "Eliminando..." : "Eliminar Streamer"}
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

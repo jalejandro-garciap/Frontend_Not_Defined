@@ -3,7 +3,8 @@ import { Agency } from "./agency.interface";
 export interface AgencyRequest {
   id: string;
   agency: Agency;
-  contractEndDate: string;
-  comments: string;
+  startDate: string;
+  endDate: string;
+  comment: string;
   status: "pending" | "accepted" | "rejected";
 }

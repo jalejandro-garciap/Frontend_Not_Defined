@@ -23,11 +23,7 @@ export const AgencyRequestCard = ({
     className="flex flex-col sm:flex-row items-center justify-between p-3 bg-slate-800/50 rounded-lg gap-4"
   >
     <div className="flex items-center gap-3 flex-grow">
-      <Avatar
-        src={request.agency.imageUrl}
-        icon={<FaBuilding className="text-slate-400" />}
-        size="md"
-      />
+      <Avatar icon={<FaBuilding className="text-slate-400" />} size="md" />
       <span className="font-medium text-slate-200">{request.agency.name}</span>
     </div>
     <div className="flex gap-2 flex-shrink-0">

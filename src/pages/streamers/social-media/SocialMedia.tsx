@@ -2,28 +2,22 @@ import { Card, CardHeader, CardBody, Button } from "@heroui/react";
 import { FiLink, FiXCircle } from "react-icons/fi";
 import { FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
+import { api } from "../../login/services/api";
+import { useState } from "react";
 
 export const SocialMedia = () => {
-  const { user } = useAuth();
+  const { user, refreshAuth } = useAuth();
 
-  const simulatedSocialMedia = [
-    {
-      social_media_name: "instagram",
-      enabled: true,
-      username: "streamer_insta",
-    },
-    { social_media_name: "tiktok", enabled: false, username: null },
-    {
-      social_media_name: "youtube",
-      enabled: false,
-      username: null,
-    },
-  ];
+  const [loadingDisconnect, setLoadingDisconnect] = useState({
+    instagram: false,
+    tiktok: false,
+    youtube: false,
+  });
 
   const socialMediaStatus =
     user?.social_medias && user.social_medias.length > 0
       ? user.social_medias
-      : simulatedSocialMedia;
+      : [];
 
   const supportedNetworks = [
     { name: "instagram", icon: FaInstagram, color: "text-[#E1306C]" },
@@ -38,13 +32,22 @@ export const SocialMedia = () => {
   };
 
   const handleConnect = (networkName: string) => {
-    console.log(`Intentando conectar: ${networkName}`);
-    alert(`Conectar con ${networkName} (Lógica no implementada)`);
+    window.open(`/api/auth/login/${networkName}`, "_self");
   };
 
-  const handleDisconnect = (networkName: string) => {
-    console.log(`Intentando desconectar: ${networkName}`);
-    alert(`Desconectar ${networkName} (Lógica no implementada)`);
+  const handleDisconnect = async (networkName: string) => {
+    setLoadingDisconnect({
+      ...loadingDisconnect,
+      [networkName]: true,
+    });
+    await api.delete(`/auth/social-media/${networkName}`).then(() => {
+      refreshAuth().finally(() => {
+        setLoadingDisconnect({
+          ...loadingDisconnect,
+          [networkName]: false,
+        });
+      });
+    });
   };
 
   return (
@@ -85,11 +88,28 @@ export const SocialMedia = () => {
                   size="sm"
                   variant="flat"
                   color="warning"
-                  startContent={<FiXCircle size={16} />}
+                  isDisabled={
+                    loadingDisconnect[
+                      network.name as keyof typeof loadingDisconnect
+                    ]
+                  }
+                  startContent={
+                    loadingDisconnect[
+                      network.name as keyof typeof loadingDisconnect
+                    ] ? (
+                      <FiXCircle size={16} className="animate-spin" />
+                    ) : (
+                      <FiXCircle size={16} />
+                    )
+                  }
                   onPress={() => handleDisconnect(network.name)}
                   className="bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-600/30"
                 >
-                  Desconectar
+                  {loadingDisconnect[
+                    network.name as keyof typeof loadingDisconnect
+                  ]
+                    ? "Desconectando..."
+                    : "Desconectar"}
                 </Button>
               ) : (
                 <Button

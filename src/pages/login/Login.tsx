@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
       navigate("/redes-sociales");
     }
   }, [isAuthenticated, navigate]);
