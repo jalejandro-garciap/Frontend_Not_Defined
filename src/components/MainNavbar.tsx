@@ -4,7 +4,6 @@ import {
   NavbarContent,
   NavbarItem,
   Button,
-  Badge,
   Dropdown,
   DropdownTrigger,
   Avatar,
@@ -14,7 +13,7 @@ import {
   SelectItem,
   Spinner,
 } from "@heroui/react";
-import { IoNotificationsOutline, IoLogOutOutline } from "react-icons/io5";
+import { IoLogOutOutline } from "react-icons/io5";
 import { MdBusinessCenter } from "react-icons/md";
 import { useAuth } from "../context/AuthContext";
 import { useManagerAgencies } from "../pages/agency/store/agencyStore";
@@ -202,17 +201,6 @@ export const MainNavbar = () => {
       </NavbarContent>
 
       <NavbarContent as="div" justify="end">
-        <Button
-          isIconOnly
-          variant="flat"
-          aria-label="Notificaciones"
-          className="text-slate-400 hover:text-slate-200 bg-slate-800/50 hover:bg-slate-700/50 rounded-full"
-        >
-          <Badge content="5" color="danger" shape="circle" size="sm">
-            <IoNotificationsOutline size={20} />
-          </Badge>
-        </Button>
-
         <Dropdown
           placement="bottom-end"
           className="bg-slate-900 border border-slate-700 rounded-xl shadow-lg"
