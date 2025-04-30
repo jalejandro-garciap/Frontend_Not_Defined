@@ -27,6 +27,7 @@ export const MainNavbar = () => {
 
   const isManager = user?.role === "MANAGER";
   const isStreamer = user?.role === "STREAMER";
+  const isAdmin = user?.role === "ADMIN";
 
   const { selectedAgency, managedAgencies, selectAgency, isLoading, error } =
     isManager
@@ -51,6 +52,43 @@ export const MainNavbar = () => {
       <NavbarBrand>
         <p className="font-bold text-inherit text-primary-400">StreamerPanel</p>
       </NavbarBrand>
+
+      {isAdmin && (
+        <>
+          <NavbarItem>
+            <Button
+              variant="flat"
+              onPress={() => handleNavigate("admin/agencias")}
+              className={`
+              ${
+                activeSection === "admin"
+                  ? "bg-sky-600/20 text-sky-300"
+                  : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+              }
+              px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
+            `}
+            >
+              Agencias
+            </Button>
+          </NavbarItem>
+          <NavbarItem>
+            <Button
+              variant="flat"
+              onPress={() => handleNavigate("admin/usuarios")}
+              className={`
+              ${
+                activeSection === "admin"
+                  ? "bg-sky-600/20 text-sky-300"
+                  : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+              }
+              px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
+            `}
+            >
+              Usuarios
+            </Button>
+          </NavbarItem>
+        </>
+      )}
 
       {isManager && (
         <>
