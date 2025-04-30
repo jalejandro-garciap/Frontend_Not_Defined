@@ -30,6 +30,8 @@ const ProtectedRoute = ({
       return <Navigate to="/streamers" replace />;
     } else if (user.role === "STREAMER") {
       return <Navigate to="/redes-sociales" replace />;
+    } else if (user.role === "ADMIN") {
+      return <Navigate to="/admin/agencias" replace />;
     }
     return <Navigate to="/" replace />;
   }
