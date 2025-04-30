@@ -58,7 +58,7 @@ const AdminAgenciesView = () => {
 
   const { mutate: createAgencyMutate, isPending: isCreating } = useMutation({
     mutationFn: createAgency,
-    onSuccess: (newAgency) => {
+    onSuccess: (_newAgency) => {
       queryClient.invalidateQueries({ queryKey: ["adminAgencies"] });
       //   toast.success(`Agencia "${newAgency.name}" creada con éxito.`);
       onCreateOpenChange();
@@ -72,7 +72,7 @@ const AdminAgenciesView = () => {
   const { mutate: updateAgencyMutate, isPending: isUpdating } = useMutation({
     // The mutation function expects the ID and the data payload
     mutationFn: (data: AdminAgency) => updateAgency(data.id, data), // Adjust if updateAgency expects different args
-    onSuccess: (updatedAgency) => {
+    onSuccess: (_updatedAgency) => {
       queryClient.invalidateQueries({ queryKey: ["adminAgencies"] });
       //   toast.success(`Agencia "${updatedAgency.name}" actualizada con éxito.`);
       onEditOpenChange();
