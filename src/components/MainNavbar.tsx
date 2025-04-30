@@ -4,7 +4,6 @@ import {
   NavbarContent,
   NavbarItem,
   Button,
-  Badge,
   Dropdown,
   DropdownTrigger,
   Avatar,
@@ -14,7 +13,7 @@ import {
   SelectItem,
   Spinner,
 } from "@heroui/react";
-import { IoNotificationsOutline, IoLogOutOutline } from "react-icons/io5";
+import { IoLogOutOutline } from "react-icons/io5";
 import { MdBusinessCenter } from "react-icons/md";
 import { useAuth } from "../context/AuthContext";
 import { useManagerAgencies } from "../pages/agency/store/agencyStore";
@@ -27,6 +26,7 @@ export const MainNavbar = () => {
 
   const isManager = user?.role === "MANAGER";
   const isStreamer = user?.role === "STREAMER";
+  const isAdmin = user?.role === "ADMIN";
 
   const { selectedAgency, managedAgencies, selectAgency, isLoading, error } =
     isManager
@@ -51,6 +51,43 @@ export const MainNavbar = () => {
       <NavbarBrand>
         <p className="font-bold text-inherit text-primary-400">StreamerPanel</p>
       </NavbarBrand>
+
+      {isAdmin && (
+        <>
+          <NavbarItem>
+            <Button
+              variant="flat"
+              onPress={() => handleNavigate("admin/agencias")}
+              className={`
+              ${
+                activeSection === "admin"
+                  ? "bg-sky-600/20 text-sky-300"
+                  : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+              }
+              px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
+            `}
+            >
+              Agencias
+            </Button>
+          </NavbarItem>
+          <NavbarItem>
+            <Button
+              variant="flat"
+              onPress={() => handleNavigate("admin/usuarios")}
+              className={`
+              ${
+                activeSection === "admin"
+                  ? "bg-sky-600/20 text-sky-300"
+                  : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+              }
+              px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-150 ease-in-out
+            `}
+            >
+              Usuarios
+            </Button>
+          </NavbarItem>
+        </>
+      )}
 
       {isManager && (
         <>
@@ -164,17 +201,6 @@ export const MainNavbar = () => {
       </NavbarContent>
 
       <NavbarContent as="div" justify="end">
-        <Button
-          isIconOnly
-          variant="flat"
-          aria-label="Notificaciones"
-          className="text-slate-400 hover:text-slate-200 bg-slate-800/50 hover:bg-slate-700/50 rounded-full"
-        >
-          <Badge content="5" color="danger" shape="circle" size="sm">
-            <IoNotificationsOutline size={20} />
-          </Badge>
-        </Button>
-
         <Dropdown
           placement="bottom-end"
           className="bg-slate-900 border border-slate-700 rounded-xl shadow-lg"

@@ -4,6 +4,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { Agencies, SocialMedia } from "./pages/streamers";
 import AgencyStreamersView from "./pages/agency/agency-streamers/AgencyStreamersView";
 import AgencyReportsView from "./pages/agency/reports/AgencyReportsView";
+import AdminAgenciesView from "./pages/admin/admin-agencies/AdminAgenciesView";
+import AdminUsersView from "./pages/admin/admin-users/AdminUsersView";
 
 function App() {
   return (
@@ -41,7 +43,23 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route
+        path="/admin/agencias"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AdminAgenciesView />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/usuarios"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AdminUsersView />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
