@@ -127,7 +127,15 @@ const AdminUsersView = () => {
             </p>
           </CardHeader>
           <CardBody>
-            <Table aria-label="Lista de usuarios" className="text-white">
+            <Table
+              aria-label="Lista de usuarios"
+              classNames={{
+                wrapper:
+                  "bg-transparent p-0",
+                table: "bg-slate-900/50",
+              }}
+              className="text-white"
+            >
               <TableHeader>
                 <TableColumn className="text-slate-300 bg-slate-800/60">
                   Usuario
@@ -172,6 +180,8 @@ const AdminUsersView = () => {
                         className={
                           user.role === "MANAGER"
                             ? "bg-sky-900/30 border-sky-700 text-sky-300"
+                            : user.role === "ADMIN"
+                            ? "bg-red-900/30 border-red-700 text-red-300"
                             : "bg-slate-800/50 border-slate-700 text-slate-300"
                         }
                       >
@@ -214,18 +224,20 @@ const AdminUsersView = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Tooltip content="Editar Usuario" placement="top">
-                        <Button
-                          size="sm"
-                          color="primary"
-                          variant="flat"
-                          onPress={() => handleEditUser(user)}
-                          startContent={<FaUserEdit />}
-                          className="bg-sky-900/30 text-sky-300 border border-sky-700 hover:bg-sky-800/40"
-                        >
-                          Editar
-                        </Button>
-                      </Tooltip>
+                      {user.role !== "ADMIN" && (
+                        <Tooltip content="Editar Usuario" placement="top">
+                          <Button
+                            size="sm"
+                            color="primary"
+                            variant="flat"
+                            onPress={() => handleEditUser(user)}
+                            startContent={<FaUserEdit />}
+                            className="bg-sky-900/30 text-sky-300 border border-sky-700 hover:bg-sky-800/40"
+                          >
+                            Editar
+                          </Button>
+                        </Tooltip>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

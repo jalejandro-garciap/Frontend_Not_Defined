@@ -107,6 +107,7 @@ export const CreateAgencyForm = ({
         isRequired
         isInvalid={!!descriptionError}
         errorMessage={descriptionError}
+        className="pt-5"
         classNames={{
           label: "text-slate-300",
           inputWrapper: "bg-slate-800 border-slate-700",
@@ -143,6 +144,7 @@ export const CreateAgencyForm = ({
         <Button
           type="submit"
           color="primary"
+          isDisabled={!name || !description || isLoading}
           isLoading={isLoading}
           className="bg-sky-600 hover:bg-sky-700 text-white"
         >

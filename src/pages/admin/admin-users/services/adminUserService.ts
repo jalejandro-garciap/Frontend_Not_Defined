@@ -16,13 +16,11 @@ export const updateUserDetails = async (
   userData: UserUpdateData
 ): Promise<AdminUser> => {
   try {
-    // First update the user role
     const userResponse = await api.patch(
       `/admin/users/${userData.id}`,
       { role: userData.role }
     );
 
-    // Then update agency assignments
     await api.post(
       `/admin/users/${userData.id}/bulk-agency-assignments`,
       { agencyIds: userData.agencyIds }
@@ -44,7 +42,7 @@ export const assignAgencyToUser = async (assignData: {
       `/admin/users/${assignData.userId}/agencies`,
       {
         agencyId: assignData.agencyId,
-        role: "manager", // Always use manager role
+        role: "manager",
       }
     );
     return response.data;

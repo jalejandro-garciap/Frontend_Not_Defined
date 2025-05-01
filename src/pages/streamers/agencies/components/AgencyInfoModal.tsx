@@ -24,6 +24,7 @@ export const AgencyInfoModal = ({
     isOpen={isOpen}
     onOpenChange={onOpenChange}
     backdrop="blur"
+    placement="center"
     className="bg-slate-900 border border-slate-700 rounded-xl"
   >
     <ModalContent>

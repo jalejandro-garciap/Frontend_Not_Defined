@@ -118,6 +118,7 @@ export const AddStreamerModal: FC<AddStreamerModalProps> = ({
       onClose={resetInternalState}
       hideCloseButton
       backdrop="blur"
+      placement="center"
       size={modalPhase === "form" ? "xl" : "lg"}
       className="bg-slate-900 border border-slate-700 rounded-xl"
     >

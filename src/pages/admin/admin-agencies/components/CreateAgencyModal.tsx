@@ -37,6 +37,7 @@ export const CreateAgencyModal = ({
       hideCloseButton
       backdrop="blur"
       size="lg"
+      placement="center"
       className="bg-slate-900 border border-slate-700 rounded-xl"
     >
       <ModalContent>
