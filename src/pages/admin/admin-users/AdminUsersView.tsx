@@ -16,7 +16,7 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/react";
-import { FaUserCog, FaEdit, FaUserEdit } from "react-icons/fa";
+import { FaUserCog, FaUserEdit } from "react-icons/fa";
 import { fetchUsers, updateUserDetails } from "./services/adminUserService";
 import { fetchAllAgencies } from "../admin-agencies/services/adminAgencyService";
 import {
