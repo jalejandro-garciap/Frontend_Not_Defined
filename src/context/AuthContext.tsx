@@ -32,12 +32,15 @@ export const loginWithGoogle = () => {
 };
 
 export const logout = async () => {
-  const { clearUser } = useAuthStore();
+  // Get clearUser directly from the store state instead of using the hook
+  const clearUser = useAuthStore.getState().clearUser;
   try {
     await api.delete("/auth/logout");
     clearUser();
   } catch (error) {
     console.error("Error al cerrar sesión:", error);
+    // Optionally clear user even if API call fails
+    clearUser();
     throw error;
   }
 };
