@@ -23,7 +23,7 @@ import { useNavigate } from "react-router";
 export const MainNavbar = () => {
   const { user, logout } = useAuth();
   const nav = useNavigate();
-  const activeSection = window.location.pathname.split("/")[1];
+  const activeSection = window.location.pathname;
 
   const isManager = user?.role === "MANAGER";
   const isStreamer = user?.role === "STREAMER";
@@ -61,7 +61,7 @@ export const MainNavbar = () => {
               onPress={() => handleNavigate("admin/agencias")}
               className={`
               ${
-                activeSection === "admin"
+                activeSection === "/admin/agencias"
                   ? "bg-sky-600/20 text-sky-300"
                   : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
               }
@@ -77,7 +77,7 @@ export const MainNavbar = () => {
               onPress={() => handleNavigate("admin/usuarios")}
               className={`
               ${
-                activeSection === "admin"
+                activeSection === "/admin/usuarios"
                   ? "bg-sky-600/20 text-sky-300"
                   : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
               }
@@ -133,7 +133,7 @@ export const MainNavbar = () => {
               onPress={() => handleNavigate("streamers")}
               className={`
                 ${
-                  activeSection === "streamers"
+                  activeSection === "/streamers"
                     ? "bg-sky-600/20 text-sky-300"
                     : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
                 }
@@ -149,7 +149,7 @@ export const MainNavbar = () => {
               onPress={() => handleNavigate("reportes")}
               className={`
                 ${
-                  activeSection === "reportes"
+                  activeSection === "/reportes"
                     ? "bg-sky-600/20 text-sky-300"
                     : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
                 }
@@ -171,7 +171,7 @@ export const MainNavbar = () => {
                 onPress={() => handleNavigate("redes-sociales")}
                 className={`
                 ${
-                  activeSection === "redes-sociales"
+                  activeSection === "/redes-sociales"
                     ? "bg-sky-600/20 text-sky-300"
                     : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
                 }
@@ -187,7 +187,7 @@ export const MainNavbar = () => {
                 onPress={() => handleNavigate("agencias")}
                 className={`
                 ${
-                  activeSection === "agencias"
+                  activeSection === "/agencias"
                     ? "bg-sky-600/20 text-sky-300"
                     : "bg-transparent text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
                 }
