@@ -7,10 +7,9 @@ import {
   CardBody,
   Chip,
   Spinner,
-  ButtonGroup, // Import ButtonGroup
+  ButtonGroup,
 } from "@heroui/react";
 import { useEffect, useState } from "react";
-// Import FaRegSquare for the deselected state
 import { FaCheckSquare, FaFileAlt, FaRegSquare } from "react-icons/fa";
 import { ReportFilters } from "./components/ReportFilters";
 import { ReportStreamerItem } from "./components/ReportStreamerItem";
@@ -22,7 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   fetchAgencyStreamers,
   generateReport,
-} from "../services/agencyService"; // Ensure AgencyStreamer is imported if not already
+} from "../services/agencyService";
 import { AffiliatedStreamer } from "../agency-streamers/interfaces/affiliated_streamer.interface";
 
 type Network = "instagram" | "tiktok" | "youtube";
@@ -160,14 +159,19 @@ const AgencyReportsView = () => {
   const handleGenerateReport = async () => {
     if (!agencyId) return;
     setLoadingDownloads(true);
+
+    const processedHashtags = hashtags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== "");
+
     try {
       if (selectedAccounts.instagram) {
         try {
-          console.log("Generating Instagram report...");
           const blob = await generateReport("instagram", reportFormat, {
             startDate: dateRange?.start.toString() || "",
             endDate: dateRange?.end.toString() || "",
-            hashtags: hashtags.split(",").map((tag) => tag.trim()),
+            hashtags: processedHashtags,
             streamerIds: selectedAccounts.instagram,
           });
 
@@ -184,11 +188,10 @@ const AgencyReportsView = () => {
 
       if (selectedAccounts.tiktok) {
         try {
-          console.log("Generating TikTok report...");
           const blob = await generateReport("tiktok", reportFormat, {
             startDate: dateRange?.start.toString() || "",
             endDate: dateRange?.end.toString() || "",
-            hashtags: hashtags.split(",").map((tag) => tag.trim()),
+            hashtags: processedHashtags,
             streamerIds: selectedAccounts.tiktok,
           });
 
@@ -205,11 +208,10 @@ const AgencyReportsView = () => {
 
       if (selectedAccounts.youtube) {
         try {
-          console.log("Generating YouTube report...");
           const blob = await generateReport("youtube", reportFormat, {
             startDate: dateRange?.start.toString() || "",
             endDate: dateRange?.end.toString() || "",
-            hashtags: hashtags.split(",").map((tag) => tag.trim()),
+            hashtags: processedHashtags,
             streamerIds: selectedAccounts.youtube,
           });
 

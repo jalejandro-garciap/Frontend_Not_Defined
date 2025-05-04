@@ -75,11 +75,12 @@ export const ReportFilters = ({
         />
         <Input
           type="text"
-          label="Filtrar por Hashtags (opcional)"
+          label="Filtrar por Hashtags"
           labelPlacement="outside"
           placeholder="#tendencia, #gaming, ..."
           value={hashtags}
           onValueChange={onHashtagChange}
+          isDisabled={!dateRange}
           startContent={
             <FaHashtag className="text-slate-400 pointer-events-none flex-shrink-0" />
           }
