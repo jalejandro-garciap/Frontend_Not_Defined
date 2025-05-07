@@ -1,0 +1,35 @@
+STREAMERSREPORT PRIVACY POLICY
+Last updated: May 7, 2025
+
+1. Information We Collect
+- TikTok profile data (username, avatar).
+- Public video list and performance metrics (views, watch time, engagement).
+- Optional videos you upload via the App.
+- Technical usage data (logs, IP address, browser) for service improvements.
+
+2. How We Use Your Information
+- Display your data on a personalized dashboard.
+- Generate downloadable performance reports.
+- Upload videos to TikTok when you request it.
+- Improve the App and detect errors.
+
+3. Data Sharing
+We do not sell, rent, or share your personal information with third parties, except with TikTok via their API to provide the service.
+
+4. Data Security
+We implement technical and organizational measures to protect your data from unauthorized access, loss, or alteration.
+
+5. Data Retention
+We retain your information as long as your account is active and as necessary to comply with legal obligations.
+
+6. Your Rights
+You may at any time:
+- Review, correct, or request deletion of your data.
+- Revoke TikTok access by disconnecting OAuth.
+To exercise these rights, contact us at j.alejandro.garcia.p@gmail.com.
+
+7. Policy Updates
+We may update this Privacy Policy. The “Last updated” date will reflect changes. Continued use of the App implies acceptance.
+
+8. Contact
+For privacy inquiries, email j.alejandro.garcia.p@gmail.com
