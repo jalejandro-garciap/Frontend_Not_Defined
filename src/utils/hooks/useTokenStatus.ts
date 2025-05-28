@@ -9,6 +9,11 @@ interface SocialMedia {
   enabled: boolean;
 }
 
+interface TokenStatusResult {
+  socialMediaId: string;
+  tokenStatus: TokenStatus | null;
+}
+
 export const useTokenStatus = (socialMedias: SocialMedia[]) => {
   const [tokenStatuses, setTokenStatuses] = useState<Map<string, TokenStatus>>(new Map());
 
@@ -23,7 +28,7 @@ export const useTokenStatus = (socialMedias: SocialMedia[]) => {
   useEffect(() => {
     if (data) {
       const statusMap = new Map<string, TokenStatus>();
-      data.forEach(({ socialMediaId, tokenStatus }) => {
+      data.forEach(({ socialMediaId, tokenStatus }: TokenStatusResult) => {
         if (tokenStatus) {
           statusMap.set(socialMediaId, tokenStatus);
         }

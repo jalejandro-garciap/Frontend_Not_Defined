@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { checkAgencyStreamersTokens, StreamerTokenStatus } from '../services/tokenService';
 
-export const useAgencyTokenStatus = (agencyId: string | null) => {
+export const useAgencyTokenStatus = (agencyId: string | undefined | null) => {
   const [tokenStatusMap, setTokenStatusMap] = useState<Map<string, StreamerTokenStatus>>(new Map());
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -16,7 +16,7 @@ export const useAgencyTokenStatus = (agencyId: string | null) => {
   useEffect(() => {
     if (data) {
       const statusMap = new Map<string, StreamerTokenStatus>();
-      data.forEach(streamerStatus => {
+      data.forEach((streamerStatus: StreamerTokenStatus) => {
         statusMap.set(streamerStatus.streamerId, streamerStatus);
       });
       setTokenStatusMap(statusMap);

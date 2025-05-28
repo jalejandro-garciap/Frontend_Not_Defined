@@ -30,7 +30,6 @@ const AgencyStreamersView = () => {
   // Token status hook for real-time token verification
   const { 
     hasExpiredTokens, 
-    getExpiredTokensCount,
     getPlatformTokenStatus,
     isLoading: isLoadingTokens 
   } = useAgencyTokenStatus(agencyId);
