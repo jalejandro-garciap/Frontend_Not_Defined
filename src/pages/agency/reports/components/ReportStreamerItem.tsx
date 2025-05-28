@@ -86,7 +86,7 @@ export const ReportStreamerItem = ({
               startContent={<FiAlertTriangle size={12} />}
               className="bg-yellow-600/20 text-yellow-300 border border-yellow-600/40 mt-1"
             >
-              {expiredTokensCount} token{expiredTokensCount > 1 ? 's' : ''} expirado{expiredTokensCount > 1 ? 's' : ''}
+              {expiredTokensCount} red{expiredTokensCount > 1 ? 'es' : ''} no disponible{expiredTokensCount > 1 ? 's' : ''} para reportes
             </Chip>
           )}
         </div>
@@ -105,7 +105,7 @@ export const ReportStreamerItem = ({
             return (
               <Tooltip
                 key={network}
-                content={hasExpiredToken ? `${network} - Token expirado` : `Seleccionar ${network}`}
+                content={hasExpiredToken ? `${network} - Token expirado - No disponible para reportes` : `Seleccionar ${network}`}
                 placement="top"
                 className="bg-slate-800 border border-slate-700 text-slate-200 rounded-md"
               >

@@ -61,12 +61,6 @@ const AgencyStreamersView = () => {
   });
 
   const handleRemoveStreamer = async (streamerId: string) => {
-    // Check if streamer has expired tokens before allowing removal
-    if (hasExpiredTokens(streamerId)) {
-      alert("No se puede eliminar el streamer porque tiene tokens de redes sociales expirados. Por favor, pídele que renueve sus conexiones primero.");
-      return;
-    }
-
     if (agencyId) {
       setLoadingRemove(true);
       try {
@@ -159,7 +153,7 @@ const AgencyStreamersView = () => {
               startContent={<FaExclamationTriangle size={12} />}
               className="ml-3 bg-yellow-600/20 text-yellow-300 border border-yellow-600/40"
             >
-              {streamersWithExpiredTokens} con tokens expirados
+              {streamersWithExpiredTokens} con redes no disponibles para reportes
             </Chip>
           )}
         </h2>
@@ -173,7 +167,7 @@ const AgencyStreamersView = () => {
 
       {streamersWithExpiredTokens > 0 && (
         <TokenExpirationAlert
-          message={`${streamersWithExpiredTokens} streamer(s) tienen tokens expirados. No se pueden realizar ciertas acciones hasta que renueven sus conexiones.`}
+          message={`${streamersWithExpiredTokens} streamer(s) tienen redes sociales con tokens expirados. Estas redes no estarán disponibles para generar reportes hasta que se renueven las conexiones.`}
           type="warning"
         />
       )}

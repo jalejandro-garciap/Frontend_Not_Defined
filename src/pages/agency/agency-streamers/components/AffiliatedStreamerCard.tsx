@@ -47,7 +47,7 @@ const SocialIcon = ({ icon: Icon, platform, isConnected, hasExpiredToken, userna
 
   if (hasExpiredToken) {
     return (
-      <Tooltip content={`${platform} - Token expirado (${username ? `@${username}` : 'Usuario desconocido'})`}>
+      <Tooltip content={`${platform} - Token expirado (${username ? `@${username}` : 'Usuario desconocido'}) - No disponible para reportes`}>
         <div className="relative">
           <Icon size={18} className="text-yellow-400" />
           <FiAlertTriangle 
@@ -60,7 +60,7 @@ const SocialIcon = ({ icon: Icon, platform, isConnected, hasExpiredToken, userna
   }
 
   return (
-    <Tooltip content={`${platform} conectado${username ? ` - @${username}` : ''}`}>
+    <Tooltip content={`${platform} conectado${username ? ` - @${username}` : ''} - Disponible para reportes`}>
       <div className="relative">
         <Icon size={18} className="text-green-400" />
         <FiCheckCircle 
@@ -86,15 +86,12 @@ export const AffiliatedStreamerCard = ({
   const tiktokStatus = streamer.connectedSocials?.tiktok;
   const youtubeStatus = streamer.connectedSocials?.youtube;
 
-  // Count expired tokens
+  // Count expired tokens (solo para mostrar información)
   const expiredTokensCount = [
     instagramStatus && typeof instagramStatus === 'object' && instagramStatus.tokenExpired,
     tiktokStatus && typeof tiktokStatus === 'object' && tiktokStatus.tokenExpired,
     youtubeStatus && typeof youtubeStatus === 'object' && youtubeStatus.tokenExpired,
   ].filter(Boolean).length;
-
-  // Check if streamer has any expired tokens
-  const hasExpiredTokens = expiredTokensCount > 0;
 
   return (
     <Card className="p-4 bg-slate-800/50 border border-slate-700">
@@ -113,7 +110,7 @@ export const AffiliatedStreamerCard = ({
                 startContent={<FiAlertTriangle size={12} />}
                 className="bg-yellow-600/20 text-yellow-300 border border-yellow-600/40 mt-1"
               >
-                {expiredTokensCount} token{expiredTokensCount > 1 ? 's' : ''} expirado{expiredTokensCount > 1 ? 's' : ''}
+                {expiredTokensCount} red{expiredTokensCount > 1 ? 'es' : ''} no disponible{expiredTokensCount > 1 ? 's' : ''} para reportes
               </Chip>
             )}
           </div>
@@ -164,37 +161,18 @@ export const AffiliatedStreamerCard = ({
               base: "data-[hover=true]:bg-slate-700/50 rounded-lg",
               title: "font-medium text-sm text-slate-200",
             }}
-            disabledKeys={loadingRemove || hasExpiredTokens ? ["remove"] : []}
+            disabledKeys={loadingRemove ? ["remove"] : []}
           >
             <DropdownItem
               key="remove"
               color="danger"
               startContent={
-                loadingRemove ? (
-                  <Spinner size="sm" />
-                ) : hasExpiredTokens ? (
-                  <FiAlertTriangle size={14} />
-                ) : (
-                  <FaTrashAlt size={14} />
-                )
+                loadingRemove ? <Spinner size="sm" /> : <FaTrashAlt size={14} />
               }
-              onPress={() => {
-                if (!hasExpiredTokens) {
-                  onRemove(streamer.id);
-                }
-              }}
-              className={`${
-                hasExpiredTokens 
-                  ? "text-yellow-400 data-[hover=true]:bg-yellow-600/20" 
-                  : "text-red-400 data-[hover=true]:bg-red-600/20"
-              }`}
+              onPress={() => onRemove(streamer.id)}
+              className="text-red-400 data-[hover=true]:bg-red-600/20"
             >
-              {loadingRemove 
-                ? "Eliminando..." 
-                : hasExpiredTokens 
-                ? "No se puede eliminar - Tokens expirados"
-                : "Eliminar Streamer"
-              }
+              {loadingRemove ? "Eliminando..." : "Eliminar Streamer"}
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
