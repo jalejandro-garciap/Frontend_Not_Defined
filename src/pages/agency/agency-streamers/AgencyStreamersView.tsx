@@ -1,6 +1,6 @@
 import { useDisclosure, Button, Chip, Spinner } from "@heroui/react";
 import { useState, useMemo } from "react";
-import { FaUserPlus } from "react-icons/fa";
+import { FaUserPlus, FaExclamationTriangle } from "react-icons/fa";
 import { SearchBar } from "../../../components/SearchBar";
 import { AddStreamerModal } from "./components/AddStreamerModal";
 import { AffiliatedStreamerCard } from "./components/AffiliatedStreamerCard";
@@ -14,6 +14,7 @@ import {
   fetchAgencyPendingStreamers,
   removeStreamerFromAgency,
 } from "../services/agencyService";
+import { useAgencyTokenStatus } from "../hooks/useAgencyTokenStatus";
 
 const AgencyStreamersView = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -25,6 +26,14 @@ const AgencyStreamersView = () => {
   const { agencyDependentKey, agencyId } = useInvalidateOnAgencyChange([
     "streamers",
   ]);
+
+  // Token status hook for real-time token verification
+  const { 
+    hasExpiredTokens, 
+    getExpiredTokensCount,
+    getPlatformTokenStatus,
+    isLoading: isLoadingTokens 
+  } = useAgencyTokenStatus(agencyId);
 
   const {
     data: affiliatedStreamersData = [],
@@ -62,12 +71,53 @@ const AgencyStreamersView = () => {
     }
   };
 
+  // Enhanced streamers data with token status
+  const enhancedStreamersData = useMemo(() => {
+    return affiliatedStreamersData.map(streamer => {
+      const enhanced = { ...streamer };
+      
+      // Add token status to connectedSocials
+      if (typeof enhanced.connectedSocials === 'object' && enhanced.connectedSocials) {
+        const socialNetworks = ['instagram', 'tiktok', 'youtube'] as const;
+        
+        socialNetworks.forEach(platform => {
+          const currentConnection = enhanced.connectedSocials[platform];
+          if (currentConnection) {
+            const tokenInfo = getPlatformTokenStatus(streamer.id, platform);
+            
+            if (typeof currentConnection === 'string') {
+              // Convert string to object with token status
+              enhanced.connectedSocials[platform] = {
+                username: currentConnection,
+                connected: true,
+                tokenExpired: tokenInfo ? (tokenInfo.tokenStatus.isExpiring || tokenInfo.tokenStatus.needsRefresh) : false
+              };
+            } else if (typeof currentConnection === 'object') {
+              // Update existing object with token status
+              enhanced.connectedSocials[platform] = {
+                ...currentConnection,
+                tokenExpired: tokenInfo ? (tokenInfo.tokenStatus.isExpiring || tokenInfo.tokenStatus.needsRefresh) : false
+              };
+            }
+          }
+        });
+      }
+      
+      return enhanced;
+    });
+  }, [affiliatedStreamersData, getPlatformTokenStatus]);
+
   const filteredStreamers = useMemo(() => {
-    if (!filterQuery) return affiliatedStreamersData;
-    return affiliatedStreamersData.filter((s) =>
+    if (!filterQuery) return enhancedStreamersData;
+    return enhancedStreamersData.filter((s) =>
       s.name.toLowerCase().includes(filterQuery.toLowerCase())
     );
-  }, [filterQuery, affiliatedStreamersData]);
+  }, [filterQuery, enhancedStreamersData]);
+
+  // Count streamers with expired tokens
+  const streamersWithExpiredTokens = useMemo(() => {
+    return enhancedStreamersData.filter(streamer => hasExpiredTokens(streamer.id)).length;
+  }, [enhancedStreamersData, hasExpiredTokens]);
 
   const isLoading = isLoadingStreamers || isLoadingPending;
 
@@ -93,8 +143,23 @@ const AgencyStreamersView = () => {
               {selectedAgency.name}
             </Chip>
           ) : null}
+          {streamersWithExpiredTokens > 0 && (
+            <Chip
+              size="sm"
+              startContent={<FaExclamationTriangle size={12} />}
+              className="ml-3 bg-yellow-600/20 text-yellow-300 border border-yellow-600/40"
+            >
+              {streamersWithExpiredTokens} con tokens expirados
+            </Chip>
+          )}
         </h2>
       </div>
+
+      {isLoadingTokens && (
+        <div className="text-center text-slate-400 text-sm py-2 bg-slate-800/30 rounded-lg">
+          Verificando estado de tokens de streamers...
+        </div>
+      )}
 
       <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
         <SearchBar
