@@ -71,21 +71,9 @@ const AgencyReportsView = () => {
     return selected;
   };
 
-  // Helper function to check if a network token is expired for a streamer
-  const isNetworkTokenExpired = (streamerId: string, network: Network): boolean => {
-    const streamer = agencyStreamers.find(s => s.id === streamerId);
-    if (!streamer) return false;
-    
-    const connection = streamer.connectedSocials[network];
-    if (typeof connection === 'object') {
-      return connection.tokenExpired || !connection.tokenExpiresAt;
-    }
-    return false;
-  };
-
   // Helper function to check if a network is connected and has valid token
   const isNetworkAvailableForReports = (streamerId: string, network: Network): boolean => {
-    const streamer = agencyStreamers.find(s => s.id === streamerId);
+    const streamer = agencyStreamers.find((s: any) => s.id === streamerId);
     if (!streamer) return false;
     
     const connection = streamer.connectedSocials[network];
@@ -93,7 +81,8 @@ const AgencyReportsView = () => {
       return connection; // Legacy format
     }
     if (typeof connection === 'object') {
-      return connection.connected && !connection.tokenExpired && connection.tokenExpiresAt;
+      // Check if connected and token is not expired
+      return connection.connected && !connection.tokenExpired;
     }
     return false;
   };
@@ -105,7 +94,7 @@ const AgencyReportsView = () => {
       return;
     }
 
-    setSelectedAccounts((prev) => {
+    setSelectedAccounts((prev: any) => {
       const newState = { ...prev };
       const currentNetworkList = newState[network] || [];
       const streamerIndex = currentNetworkList.indexOf(streamerId);
@@ -131,7 +120,7 @@ const AgencyReportsView = () => {
     streamerId: string,
     select: boolean
   ) => {
-    const streamer = agencyStreamers.find((s) => s.id === streamerId);
+    const streamer = agencyStreamers.find((s: any) => s.id === streamerId);
     if (!streamer) return;
 
     // Only include networks that are available for reports (not expired)
@@ -139,7 +128,7 @@ const AgencyReportsView = () => {
       .filter(([network]) => isNetworkAvailableForReports(streamerId, network as Network))
       .map(([network]) => network) as Network[];
 
-    setSelectedAccounts((prev) => {
+    setSelectedAccounts((prev: any) => {
       const newState = { ...prev };
       availableNetworks.forEach((network) => {
         const currentNetworkList = newState[network] || [];
@@ -170,7 +159,7 @@ const AgencyReportsView = () => {
   const handleSelectAllGlobal = (select: boolean) => {
     if (select) {
       const newSelection: SelectedAccounts = {};
-      agencyStreamers.forEach((streamer) => {
+      agencyStreamers.forEach((streamer: any) => {
         // Only include networks that are available for reports (not expired)
         const availableNetworks = Object.entries(streamer.connectedSocials)
           .filter(([network]) => isNetworkAvailableForReports(streamer.id, network as Network))
@@ -197,8 +186,8 @@ const AgencyReportsView = () => {
 
     const processedHashtags = hashtags
       .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== "");
+      .map((tag: string) => tag.trim())
+      .filter((tag: string) => tag !== "");
 
     try {
       if (selectedAccounts.instagram) {
@@ -269,7 +258,7 @@ const AgencyReportsView = () => {
     Object.values(selectedAccounts) as string[][]
   ).reduce((sum, list) => sum + list.length, 0);
 
-  const totalPossibleAccounts = agencyStreamers.reduce((count, streamer) => {
+  const totalPossibleAccounts = agencyStreamers.reduce((count: number, streamer: any) => {
     // Only count networks that are available for reports (not expired)
     const availableCount = Object.entries(streamer.connectedSocials).filter(
       ([network]) => isNetworkAvailableForReports(streamer.id, network as Network)
