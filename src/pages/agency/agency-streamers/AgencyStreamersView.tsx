@@ -4,6 +4,7 @@ import { FaUserPlus, FaExclamationTriangle } from "react-icons/fa";
 import { SearchBar } from "../../../components/SearchBar";
 import { AddStreamerModal } from "./components/AddStreamerModal";
 import { AffiliatedStreamerCard } from "./components/AffiliatedStreamerCard";
+import { TokenExpirationAlert } from "./components/TokenExpirationAlert";
 import {
   useManagerAgencies,
   useInvalidateOnAgencyChange,
@@ -60,19 +61,29 @@ const AgencyStreamersView = () => {
   });
 
   const handleRemoveStreamer = async (streamerId: string) => {
+    // Check if streamer has expired tokens before allowing removal
+    if (hasExpiredTokens(streamerId)) {
+      alert("No se puede eliminar el streamer porque tiene tokens de redes sociales expirados. Por favor, pídele que renueve sus conexiones primero.");
+      return;
+    }
+
     if (agencyId) {
       setLoadingRemove(true);
-      await removeStreamerFromAgency(agencyId, streamerId).then(() => {
-        refetchStreamers().finally(() => {
-          setLoadingRemove(false);
-        });
-      });
+      try {
+        await removeStreamerFromAgency(agencyId, streamerId);
+        await refetchStreamers();
+      } catch (error) {
+        console.error("Error removing streamer:", error);
+        alert("Error al eliminar el streamer. Inténtalo de nuevo.");
+      } finally {
+        setLoadingRemove(false);
+      }
     }
   };
 
   // Enhanced streamers data with token status
   const enhancedStreamersData = useMemo(() => {
-    return affiliatedStreamersData.map(streamer => {
+    return affiliatedStreamersData.map((streamer: any) => {
       const enhanced = { ...streamer };
       
       // Add token status to connectedSocials
@@ -108,14 +119,14 @@ const AgencyStreamersView = () => {
 
   const filteredStreamers = useMemo(() => {
     if (!filterQuery) return enhancedStreamersData;
-    return enhancedStreamersData.filter((s) =>
+    return enhancedStreamersData.filter((s: any) =>
       s.name.toLowerCase().includes(filterQuery.toLowerCase())
     );
   }, [filterQuery, enhancedStreamersData]);
 
   // Count streamers with expired tokens
   const streamersWithExpiredTokens = useMemo(() => {
-    return enhancedStreamersData.filter(streamer => hasExpiredTokens(streamer.id)).length;
+    return enhancedStreamersData.filter((streamer: any) => hasExpiredTokens(streamer.id)).length;
   }, [enhancedStreamersData, hasExpiredTokens]);
 
   const isLoading = isLoadingStreamers || isLoadingPending;
@@ -160,6 +171,13 @@ const AgencyStreamersView = () => {
         </div>
       )}
 
+      {streamersWithExpiredTokens > 0 && (
+        <TokenExpirationAlert
+          message={`${streamersWithExpiredTokens} streamer(s) tienen tokens expirados. No se pueden realizar ciertas acciones hasta que renueven sus conexiones.`}
+          type="warning"
+        />
+      )}
+
       <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
         <SearchBar
           placeholder="Filtrar streamers..."
@@ -186,7 +204,7 @@ const AgencyStreamersView = () => {
       ) : (
         <div className="space-y-4">
           {filteredStreamers.length > 0 ? (
-            filteredStreamers.map((streamer) => (
+            filteredStreamers.map((streamer: any) => (
               <AffiliatedStreamerCard
                 key={streamer.id}
                 streamer={streamer}

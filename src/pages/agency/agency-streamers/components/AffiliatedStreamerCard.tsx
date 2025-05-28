@@ -93,6 +93,9 @@ export const AffiliatedStreamerCard = ({
     youtubeStatus && typeof youtubeStatus === 'object' && youtubeStatus.tokenExpired,
   ].filter(Boolean).length;
 
+  // Check if streamer has any expired tokens
+  const hasExpiredTokens = expiredTokensCount > 0;
+
   return (
     <Card className="p-4 bg-slate-800/50 border border-slate-700">
       <CardBody className="flex flex-row items-center justify-between gap-4">
@@ -161,18 +164,37 @@ export const AffiliatedStreamerCard = ({
               base: "data-[hover=true]:bg-slate-700/50 rounded-lg",
               title: "font-medium text-sm text-slate-200",
             }}
-            disabledKeys={loadingRemove ? ["remove"] : []}
+            disabledKeys={loadingRemove || hasExpiredTokens ? ["remove"] : []}
           >
             <DropdownItem
               key="remove"
               color="danger"
               startContent={
-                loadingRemove ? <Spinner size="sm" /> : <FaTrashAlt size={14} />
+                loadingRemove ? (
+                  <Spinner size="sm" />
+                ) : hasExpiredTokens ? (
+                  <FiAlertTriangle size={14} />
+                ) : (
+                  <FaTrashAlt size={14} />
+                )
               }
-              onPress={() => onRemove(streamer.id)}
-              className="text-red-400 data-[hover=true]:bg-red-600/20"
+              onPress={() => {
+                if (!hasExpiredTokens) {
+                  onRemove(streamer.id);
+                }
+              }}
+              className={`${
+                hasExpiredTokens 
+                  ? "text-yellow-400 data-[hover=true]:bg-yellow-600/20" 
+                  : "text-red-400 data-[hover=true]:bg-red-600/20"
+              }`}
             >
-              {loadingRemove ? "Eliminando..." : "Eliminar Streamer"}
+              {loadingRemove 
+                ? "Eliminando..." 
+                : hasExpiredTokens 
+                ? "No se puede eliminar - Tokens expirados"
+                : "Eliminar Streamer"
+              }
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
