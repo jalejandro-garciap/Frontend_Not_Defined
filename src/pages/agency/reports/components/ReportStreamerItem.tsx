@@ -62,7 +62,15 @@ export const ReportStreamerItem = ({
     connectedNetworks.some((network) => selectedAccounts.has(network));
 
   const handleSelectAllChange = (isSelected: boolean) => {
-    onToggleAllStreamerAccounts(streamer.id, isSelected);
+    if (isSelected) {
+      connectedNetworks.forEach((network) => {
+        if (!selectedAccounts.has(network)) {
+          onAccountToggle(streamer.id, network);
+        }
+      });
+    } else {
+      onToggleAllStreamerAccounts(streamer.id, false);
+    }
   };
 
   const getIcon = (network: string, isExpired: boolean = false) => {
@@ -127,6 +135,13 @@ export const ReportStreamerItem = ({
             const isSelected = selectedAccounts.has(networkKey);
             const canSelect = status.connected && !status.isExpired;
 
+            const handleNetworkClick = () => {
+              if (!canSelect || status.isExpired) {
+                return;
+              }
+              onAccountToggle(streamer.id, networkKey);
+            };
+
             return (
               <Tooltip
                 key={network}
@@ -140,11 +155,11 @@ export const ReportStreamerItem = ({
               >
                 <button
                   type="button"
-                  onClick={() => canSelect && onAccountToggle(streamer.id, networkKey)}
+                  onClick={handleNetworkClick}
                   disabled={!canSelect}
                   className={`p-1.5 rounded-md transition-all duration-150 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 ${
                     !canSelect
-                      ? "opacity-50 cursor-not-allowed bg-slate-700/30"
+                      ? "opacity-50 cursor-not-allowed bg-slate-700/30 pointer-events-none"
                       : isSelected
                       ? "bg-sky-600/30 border border-sky-500 scale-105"
                       : "bg-slate-700/50 border border-transparent hover:bg-slate-600/50"
