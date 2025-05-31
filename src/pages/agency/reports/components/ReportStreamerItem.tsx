@@ -28,7 +28,7 @@ export const ReportStreamerItem = ({
     if (typeof social === "object" && "connected" in social) {
       return {
         connected: social.connected,
-        isExpired: social.tokenExpired || false,
+        isExpired: social.isTokenExpired || false,
       };
     }
 
@@ -100,7 +100,6 @@ export const ReportStreamerItem = ({
         return "text-slate-400";
     }
   };
-  console.log("streamer", streamer);
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-3 bg-slate-800/50 border border-slate-700 rounded-lg">
