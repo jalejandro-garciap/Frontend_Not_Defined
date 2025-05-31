@@ -1,5 +1,5 @@
-import { Card, CardHeader, CardBody, Button } from "@heroui/react";
-import { FiLink, FiXCircle } from "react-icons/fi";
+import { Card, CardHeader, CardBody, Button, Tooltip } from "@heroui/react";
+import { FiLink, FiXCircle, FiAlertCircle } from "react-icons/fi";
 import { FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 import { api } from "../../login/services/api";
@@ -67,6 +67,8 @@ export const SocialMedia = () => {
         {supportedNetworks.map((network) => {
           const status = getNetworkStatus(network.name);
           const Icon = network.icon;
+          const isExpired = status?.isTokenExpired === true;
+
           return (
             <div
               key={network.name}
@@ -82,8 +84,16 @@ export const SocialMedia = () => {
                     @{status.username}
                   </span>
                 )}
+                {isExpired && (
+                  <Tooltip content="Tu sesión ha expirado. Por favor, reconecta tu cuenta.">
+                    <div className="flex items-center gap-1 text-amber-500">
+                      <FiAlertCircle size={16} />
+                      <span className="text-xs">Token expirado</span>
+                    </div>
+                  </Tooltip>
+                )}
               </div>
-              {status?.enabled ? (
+              {status?.enabled && !isExpired ? (
                 <Button
                   size="sm"
                   variant="flat"
@@ -114,13 +124,17 @@ export const SocialMedia = () => {
               ) : (
                 <Button
                   size="sm"
-                  variant="flat"
-                  color="primary"
+                  variant={isExpired ? "solid" : "flat"}
+                  color={isExpired ? "warning" : "primary"}
                   startContent={<FiLink size={16} />}
                   onPress={() => handleConnect(network.name)}
-                  className="bg-sky-600/10 hover:bg-sky-600/20 text-sky-300 border border-sky-600/30"
+                  className={
+                    isExpired
+                      ? "bg-amber-600 hover:bg-amber-700 text-white"
+                      : "bg-sky-600/10 hover:bg-sky-600/20 text-sky-300 border border-sky-600/30"
+                  }
                 >
-                  Conectar
+                  {isExpired ? "Reconectar" : "Conectar"}
                 </Button>
               )}
             </div>

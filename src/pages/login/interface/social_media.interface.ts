@@ -6,4 +6,6 @@ export interface SocialMedia {
   enabled: boolean;
   created_at: string;
   updated_at: string;
+  token_expires_at?: string | null;
+  isTokenExpired?: boolean;
 }
